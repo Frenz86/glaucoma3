@@ -5,9 +5,9 @@ import numpy as np
 import requests
 import os
 from io import BytesIO
-
-
 import wget
+
+
 def download_model():
     model_path = 'my_model2.tflite'
     if not os.path.exists(model_path):
@@ -16,17 +16,35 @@ def download_model():
     else:
         print("Model is here.")
 
-##### MAIN ####
+def file_selector(folder_path='.'):
+	filenames = os.listdir(folder_path)
+	selected_filename = st.selectbox('Select a file inside images collections: ', filenames)
+	return os.path.join(folder_path, selected_filename)
+
 def main():
-    st.button("Re-run")
+	st.title("Eye Detection")
+	image_file = st.file_uploader("Upload Image", type = ['jpg','png','jpeg'])
     download_model()
     model_path = 'my_model2.tflite'
+
+	if image_file != None:
+		image1 = Image.open(image_file)
+		rgb_im = image1.convert('RGB') 
+		image = rgb_im.save("saved_image.jpg")
+		image_path = "saved_image.jpg"
+		st.image(image1, width = 450)
+	
+	else:
+		folder_path = './images/'
+		filename = file_selector(folder_path=folder_path)
+		st.write('You selected `%s`' % filename)
+		image = Image.open(filename)
+		image_path = filename
+		print(image_path)
+		st.image(image,use_column_width=True)
     
-    file = st.file_uploader("Please upload an image(jpg) file", type=["jpg"])
-    if file is None:
-        st.text("You haven't uploaded a jpg image file")
-    else:
-        img = Image.open(file)
+    if st.button("Make Prediction"):
+        img = Image.open(image_path)
         ## Load model
         interpreter = Interpreter(model_path)
         print("Model Loaded Successfully.")
@@ -37,7 +55,6 @@ def main():
         image = np.asarray(image)
         image = (image.astype(np.float32) / 255.0)
         input_data = image[np.newaxis,...]
-
 
         ## run inference
         interpreter.allocate_tensors()
