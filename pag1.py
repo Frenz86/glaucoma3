@@ -17,32 +17,33 @@ def download_model():
         print("Model is here.")
 
 def file_selector(folder_path='.'):
-	filenames = os.listdir(folder_path)
-	selected_filename = st.selectbox('Select a file inside images collections: ', filenames)
-	return os.path.join(folder_path, selected_filename)
+    filenames = os.listdir(folder_path)
+    selected_filename = st.selectbox('Select a file inside images collections: ', filenames)
+    return os.path.join(folder_path, selected_filename)
 
 def main():
-	st.title("Eye Detection")
-	image_file = st.file_uploader("Upload Image", type = ['jpg','png','jpeg'])
+    st.title("Eye Detection")
+    image_file = st.file_uploader("Upload Image", type = ['jpg','png','jpeg'])
     download_model()
     model_path = 'my_model2.tflite'
 
-	if image_file != None:
-		image1 = Image.open(image_file)
-		rgb_im = image1.convert('RGB') 
-		image = rgb_im.save("saved_image.jpg")
-		image_path = "saved_image.jpg"
-		st.image(image1, width = 450)
-	
-	else:
-		folder_path = './images/'
-		filename = file_selector(folder_path=folder_path)
-		st.write('You selected `%s`' % filename)
-		image = Image.open(filename)
-		image_path = filename
-		print(image_path)
-		st.image(image,use_column_width=True)
-    
+    if image_file != None:
+        image1 = Image.open(image_file)
+        rgb_im = image1.convert('RGB') 
+        image = rgb_im.save("saved_image.jpg")
+        image_path = "saved_image.jpg"
+        st.image(image1, width = 450)
+
+    else:
+        folder_path = './images/'
+        filename = file_selector(folder_path=folder_path)
+        st.write('You selected `%s`' % filename)
+        image = Image.open(filename)
+        image_path = filename
+        print(image_path)
+        st.image(image,width = 450)
+        #st.image(image,use_column_width=True)
+
     if st.button("Make Prediction"):
         img = Image.open(image_path)
         ## Load model
