@@ -22,7 +22,7 @@ def file_selector(folder_path='.'):
     return os.path.join(folder_path, selected_filename)
 
 def main():
-    st.title("Eye Detection")
+    #st.title("Eye Detection")
     image_file = st.file_uploader("Upload Image", type = ['jpg','png','jpeg'])
     download_model()
     model_path = 'my_model2.tflite'
